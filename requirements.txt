@@ -1,0 +1,22 @@
+# Folded-tube GNN surrogate — dependencies.
+#
+# Install (pip):
+#     python -m pip install -r gnn/requirements.txt
+#
+# Notes:
+#  * torch: CUDA/MPS build as appropriate for the machine (CPU works too).
+#  * torch_geometric: pure-python core is enough here (no torch-scatter needed).
+#  * cadquery-ocp: OpenCASCADE (OCCT) python bindings used by step_extract.py.
+#    Alternative: `conda install -c conda-forge pythonocc-core` (import namespace OCC.Core.*);
+#    step_extract.py tries OCP first, then OCC.
+numpy>=1.26
+pandas>=2.1
+scipy>=1.11
+scikit-image>=0.22     # 3-D skeletonize for robust folded-tube centerline extraction
+networkx>=3.1
+matplotlib>=3.8
+torch>=2.2
+torch_geometric>=2.5
+cadquery-ocp>=7.7
+shapely>=2.0        # exact polygon-clip overlap area for method #2 surface coupling
+pyyaml>=6.0

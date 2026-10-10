@@ -1,0 +1,18 @@
+# Only training code is tracked: no device data, slides or training results
+A*2026_Trial*/
+*.step
+*.stp
+csv/
+results/
+tube_geometry.csv*
+results/
+*.pt
+*.pth
+*.pkl
+*.npz
+*.csv
+*.log
+*.pdf
+*.ppt*
+*.png
+__pycache__/

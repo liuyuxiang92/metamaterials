@@ -1,0 +1,38 @@
+# Method #3 v2 (§3.3.2): layer-stack CNN with inter-layer GAP features + RICH pooling.
+# Upgrade over layer_cnn: per-layer scalars gain [g_minus, g_plus] (partition gaps to the
+# layers below/above), and device pooling becomes [h_front, h_back, mean, max, attention].
+# The 3x 1D conv along z (kernel 3 -> i-3..i+3) already matches the spec, so it is unchanged.
+run_name: layer_cnn_v2
+representation: voxel
+model: layercnn
+
+# rasterization
+px_mm: 0.25                # pixel size (mm); resolves the 3 tube widths at 18/20/32 px
+
+# §3.3.2 upgrades
+add_gaps: true            # per-layer scalars = [thickness, z_center, gap_below, gap_above]
+rich_pool: true           # h_device = [h_front, h_back, mean, max, attention]
+
+# z-stage: interaction range along the layer axis (already matches "three 1D conv, i-3..i+3")
+z_kernel: 3               # conv kernel over layers
+z_depth: 3                # blocks -> receptive field 1 + z_depth*(z_kernel-1) = 7 layers
+z_posenc: false           # relative adjacency is the signal; no absolute-height encoding
+
+# physics resonance features (kept ON to match the layer_cnn baseline; isolates the upgrade)
+add_resonance: true
+resonance_k: 3
+resonance_mode: quarter
+resonance_sigma: 40.0
+
+# model
+hidden: 64
+dropout: 0.3
+
+# optimisation (nested LOO — no test-device leak)
+lr: 0.001
+weight_decay: 0.0001
+epochs: 400               # cap for the inner early-stopping runs
+patience: 80
+inner_folds: 5            # inner validation devices per outer fold (<=5)
+seed: 0
+device: auto

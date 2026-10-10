@@ -1,0 +1,33 @@
+# Rep-1 v2 — segment nodes with 12-d physical features + 3 typed edges each carrying its
+# own edge-feature vector, read by an edge-conditioned GINEConv-per-relation GNN.
+run_name: seg_egnn
+representation: seg_graph_v2
+model: segegnn
+source: brep
+
+# 12-d node vector: [c(3), d_hat(3), L, w, h, D_h, s, L_tube]  (canonical order — keep it)
+feature_names: [seg_center, seg_direction, seg_length, width_height,
+                hydraulic_diameter, dist_to_open, tube_length]
+
+# edge cutoffs: base = sqrt(median cross-section) + partition (wall-adjacent duct separation);
+# scale widens it to catch diagonal / second-nearest neighbours.
+open_cutoff_scale: 1.5      # opening-coupling: distance between segment-0 opening centres
+spatial_cutoff_scale: 1.5   # spatial-coupling: applied to true segment-segment min distance
+
+# model
+hidden: 64
+num_layers: 3
+dropout: 0.3
+
+# optimisation (heavy regularisation — tiny dataset)
+lr: 0.001
+weight_decay: 0.0001
+epochs: 400
+patience: 80
+seed: 0
+device: cpu                 # CPU ~28x faster than MPS for these tiny graphs
+
+# nested-LOO epoch selection (no test-device leak)
+inner_folds: 5
+
+add_resonance: false        # seg_egnn_res.yaml sets this true

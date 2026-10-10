@@ -1,0 +1,32 @@
+# Method #2, Stage 2: absolute features + physics resonance features.
+#   tube_f1 on Graph-2 surface nodes + device resonance comb at the head.
+run_name: dual_gnn_res
+representation: dual_graph
+model: dualgnn
+invariant: false           # absolute base (best-performing so far)
+
+add_resonance: true        # tube_f1 (Graph 2) + resonance comb (head)
+resonance_k: 3             # harmonics per tube
+resonance_mode: quarter    # quarter-wave (2n-1)c/4L  |  half -> n c/2L
+resonance_sigma: 40.0      # comb bump width (Hz)
+graph1_resonance: false    # per-tube f_n on Graph-1 vertices (optional; off)
+
+source: brep
+feature_names: [abs_endpoints, cross_section]
+coupling_scale: 1.5
+
+# model
+hidden: 64
+num_layers: 3
+dropout: 0.3
+
+# optimisation
+lr: 0.001
+weight_decay: 0.0001
+epochs: 400
+patience: 80
+seed: 0
+device: auto
+
+# nested-LOO epoch selection (no test-device leak)
+inner_folds: 5
